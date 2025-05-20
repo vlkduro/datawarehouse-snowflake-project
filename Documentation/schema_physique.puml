@@ -1,0 +1,109 @@
+@startuml schema_physique
+title AI07 - Projet - Schéma physique de la base de données
+
+note as N_Source
+  Source des informations :
+  * Hopital Mapping VF.xlsx
+  
+  Formalisme :
+  * <u>Clé primaire</u>
+  * <i>Clé étrangère</i>
+end note
+
+class CHAMBRE {
+  {static} {pkey} NO_CHAMBRE: integer NOT NULL
+  NOM_CHAMBRE: varchar[20] NOT NULL
+  NO_ETAGE: byteint
+  NOM_BATIMENT: varchar[20]
+  TYPE_CHAMBRE: varchar[10]
+  PRIX_JOUR: smallint NOT NULL
+  DT_CREATION: date NOT NULL
+}
+
+class TRAITEMENT {
+  {static} {pkey} ID_TRAITEMENT: integer NOT NULL
+  {abstract} {fkey} CD_MEDICAMENT : integer NOT NULL
+  CATG_MEDICAMENT: varchar[100] NOT NULL
+  MARQUE_FABRI: varchar[100] NOT NULL
+  QTE_MEDICAMENT: smallint
+  DSC_POSOLOGIE: varchar[100] NOT NULL
+  ID_CONSULT: integer NOT NULL
+  TS_CREATION_TRAITEMENT: timestamp[0] NOT NULL
+}
+
+class PERSONNEL {
+  {static} {pkey} ID_PERSONNEL: integer NOT NULL
+  NOM_PERSONNEL: varchar[100] NOT NULL
+  PRENOM_PERSONNEL: varchar[100] NOT NULL
+  FONCTION_PERSONNEL: varchar[50] NOT NULL
+  TS_DEBUT_ACTIVITE: timestamp[0] NOT NULL
+  TS_FIN_ACTIVITE: timestamp[0]
+  RAISON_FIN_ACTIVITE: varchar[100]
+  TS_CREATION_PERSONNEL: timestamp[0] NOT NULL
+  TS_MAJ_PERSONNEL: timestamp[0] NOT NULL
+  CD_STATUT_PERSONNEL: varchar[10] NOT NULL
+}
+
+class PATIENT {
+  {static} {pkey} ID_PATIENT: integer NOT NULL
+  NOM_PATIENT: varchar[100] NOT NULL
+  PRENOM_PATIENT: varchar[100] NOT NULL
+  DT_NAISS: date
+  VILLE_NAISS: varchar[100]
+  PAYS_NAISS: varchar[100]
+  NUM_SECU: varchar[15]
+  IND_PAYS_NUM_TELP: varchar[5]
+  NUM_TELEPHONE: varchar[20]
+  NUM_VOIE: varchar[10]
+  DSC_VOIE: varchar[250]
+  CMPL_VOIE: varchar[250]
+  CD_POSTAL: varchar[10]
+  VILLE: varchar[100]
+  PAYS: varchar[100]
+  TS_CREATION_PATIENT: timestamp[0] NOT NULL
+  TS_MAJ_PATIENT: timestamp[0] NOT NULL
+}
+
+class CONSULTATION {
+  {static} {pkey} ID_CONSULT: integer NOT NULL
+  {abstract} {fkey} ID_PERSONNEL: integer NOT NULL
+  {abstract} {fkey} ID_PATIENT: integer NOT NULL
+  TS_DEBUT_CONSULT: timestamp[0] NOT NULL
+  TS_FIN_CONSULT: timestamp[0] NOT NULL
+  POIDS_PATIENT: integer NOT NULL
+  TEMP_PATIENT: integer
+  UNIT_TEMP: varchar[15]
+  TENSION_PATIENT: integer
+  DSC_PATHO: varchar[250]
+  INDIC_DIABETE: varchar[10] {boolean}
+  ID_TRAITEMENT: integer
+  INDIC_HOSPI: varchar[10] {boolean}
+}
+
+class HOSPITALISATION {
+  {static} {pkey} ID_HOSPI: integer NOT NULL
+  {abstract} {fkey} ID_CONSULT: integer NOT NULL
+  {abstract} {fkey} NO_CHAMBRE: smallint NOT NULL
+  TS_DEBUT_HOSPI: timestamp[0] NOT NULL
+  TS_FIN_HOSPI: timestamp[0]
+  COUT_HOSPI: timestamp[0] [???] NOT NULL
+  ID_PERSONNEL_RESP: integer NOT NULL
+}
+
+class MEDICAMENT {
+  {static} {pkey} CD_MEDICAMENT: varchar[10] NOT NULL
+  NOM_MEDICAMENT: varchar[250]
+  CONDIT_MEDICAMENT: varchar[100]
+  CATG_MEDICAMENT: varchar[100] NOT NULL
+  MARQUE_FABRI: varchar[100] NOT NULL
+}
+
+TRAITEMENT --> MEDICAMENT : CD_MEDICAMENT
+
+CONSULTATION --> PERSONNEL : ID_PERSONNEL
+CONSULTATION --> PATIENT : ID_PATIENT
+CONSULTATION --> TRAITEMENT : ID_TRAITEMENT
+
+HOSPITALISATION --> CONSULTATION : ID_CONSULT 
+HOSPITALISATION --> CHAMBRE : NO_CHAMBRE
+@enduml
