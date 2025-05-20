@@ -1,0 +1,4 @@
+Append : ajouter de la table WRK -> SOC
+Upsert : si données de WRK existe dans SOC on met à jour les données et celles qui n'Existent pas sont ajoutées ensuite
+Delete Insert (FULL) : supprimer le contenu de SOC pour la remplir par WRK -> on remplace. Souvent utilisé pour les référentiels.
+Delta historisé : notion période validité donnée, on assure un historique des données.
