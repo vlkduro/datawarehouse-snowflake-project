@@ -84,10 +84,10 @@ class HOSPITALISATION {
   {static} {pkey} ID_HOSPI: integer NOT NULL
   {abstract} {fkey} ID_CONSULT: integer NOT NULL
   {abstract} {fkey} NO_CHAMBRE: smallint NOT NULL
+  {abstract} {fkey} ID_PERSONNEL_RESP: integer NOT NULL
   TS_DEBUT_HOSPI: timestamp[0] NOT NULL
   TS_FIN_HOSPI: timestamp[0]
   COUT_HOSPI: timestamp[0] [???] NOT NULL
-  ID_PERSONNEL_RESP: integer NOT NULL
 }
 
 class MEDICAMENT {
