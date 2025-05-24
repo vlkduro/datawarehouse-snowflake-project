@@ -15,7 +15,7 @@ class CHAMBRE {
   NOM_CHAMBRE: varchar[20] NOT NULL
   NO_ETAGE: byteint
   NOM_BATIMENT: varchar[20]
-  TYPE_CHAMBRE: varchar[10]
+  TYPE_CHAMBRE: varchar[10] type : {simple, double}
   PRIX_JOUR: smallint NOT NULL
   DT_CREATION: date NOT NULL
 }
@@ -84,10 +84,10 @@ class HOSPITALISATION {
   {static} {pkey} ID_HOSPI: integer NOT NULL
   {abstract} {fkey} ID_CONSULT: integer NOT NULL
   {abstract} {fkey} NO_CHAMBRE: smallint NOT NULL
+  {abstract} {fkey} ID_PERSONNEL_RESP: integer NOT NULL
   TS_DEBUT_HOSPI: timestamp[0] NOT NULL
   TS_FIN_HOSPI: timestamp[0]
   COUT_HOSPI: timestamp[0] [???] NOT NULL
-  ID_PERSONNEL_RESP: integer NOT NULL
 }
 
 class MEDICAMENT {
@@ -105,5 +105,8 @@ CONSULTATION --> PATIENT : ID_PATIENT
 CONSULTATION --> TRAITEMENT : ID_TRAITEMENT
 
 HOSPITALISATION --> CONSULTATION : ID_CONSULT 
+HOSPITALISATION --> PERSONNEL : ID_PERSONNEL_RESP 
+
 HOSPITALISATION --> CHAMBRE : NO_CHAMBRE
 @enduml
+
