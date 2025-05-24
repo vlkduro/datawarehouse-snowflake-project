@@ -1,0 +1,177 @@
+@startuml schema_physique
+title AI07 - Projet - Schéma physique de la base de données Socle
+
+note as N_Source
+  Source des informations :
+  * Hopital Mapping VF.xlsx
+
+  Formalisme :
+  * <u>Clé primaire</u>
+  * <i>Clé étrangère</i>
+end note
+
+class R_ROOM {
+    {static} {pkey} ROOM_NUM: integer NOT NULL
+    ROOM_NAME: varchar[20] NOT NULL
+    FLOOR_NUM: byteint
+    BULD_NAME: varchar[20]
+    ROOM_TYP: varchar[10]
+    ROOM_DAY_RATE: smallint NOT NULL
+    CRTN_DT: date NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_TRET {
+    {static} {pkey} TRET_ID: integer NOT NULL
+    {abstract} {fkey} MEDC_ID: integer
+    MEDC_QTY: smallint
+    DOSG_DSC: varchar[100] NOT NULL
+    CONS_ID: integer NOT NULL
+    TRET_CRTN_DTTM: timestamp[0] NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+note right of O_TRET::TRET_ID
+    Obtenu en faisant la combinaison des champs suivants :
+    CD_MEDICAMENT
+    CATG_MEDICAMENT
+    MARQUE_FABRI
+end note
+
+class R_PART {
+    {static} {pkey} PART_ID: integer NOT NULL
+    SRC_ID: integer NOT NULL
+    SRC_TYP: varchar[50] NOT NULL
+}
+
+class O_INDV {
+    {static} {abstract} {pkey & fkey} PART_ID: integer NOT NULL
+    INDV_NAME: varchar[100] NOT NULL
+    INDV_FIRS_NAME: varchar[100] NOT NULL
+    INDV_STTS_CD: varchar[10] NOT NULL
+    CRTN_DTTM: timestamp[0] NOT NULL
+    UPDT_DTTM: timestamp[0] NOT NULL
+    BIRT_DT: date
+    BIRT_CITY: varchar[100]
+    BIRT_CNTR: varchar[100]
+    SOCL_NUM: varchar[15]
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_STFF {
+    {static} {abstract} {pkey & fkey} PART_ID: integer NOT NULL
+    WORK_STRT_DTTM: timestamp[0] NOT NULL
+    WORK_END_DTTM: timestamp[0]
+    WORK_END_RESN: varchar[100]
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_TELP {
+    {static} {abstract} {pkey & fkey} PART_ID: integer NOT NULL
+    CNTR_IND: varchar[5]
+    TELP_NUM: varchar[20] NOT NULL
+    {static} {pkey} STRT_VALD_DTTM: timestamp[0] NOT NULL
+    END_VALD_DTTM: timestamp[0] NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_ADDR {
+    {static} {abstract} {pkey & fkey} PART_ID: integer NOT NULL
+    STRT_NUM: varchar[10] NOT NULL
+    STRT_DSC: varchar[250] NOT NULL
+    COMP_STRT: varchar[250]
+    POST_CD: varchar[10] NOT NULL
+    CITY_NAME: varchar[100]
+    CNTR_NAME: varchar[100]
+    {static} {pkey} STRT_VALD_DTTM: timestamp[0] NOT NULL
+    END_VALD_DTTM: timestamp[0] NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_CONS {
+    {static} {pkey} CONS_ID: integer NOT NULL
+    {abstract} {fkey} STFF_ID: integer NOT NULL
+    {abstract} {fkey} PATN_ID: integer NOT NULL UNIQUE
+    CONS_STRT_DTTM: timestamp[0] NOT NULL
+    CONS_END_DTTM: timestamp[0] NOT NULL
+    PATN_WEGHT: integer NOT NULL
+    PATN_TEMP: integer
+    TEMP_UNIT: varchar[15]
+    BLD_PRSS: integer
+    PATH_DSC: varchar[250]
+    DIBT_IND: byteint {boolean}
+    {abstract} {fkey} TRET_ID: timestamp[0] {integer ?}
+    HOSP_IND: byteint {boolean}
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class O_HOSP {
+    {static} {pkey} HOSP_ID: integer
+    {abstract} {fkey} CONS_ID: integer NOT NULL UNIQUE
+    {abstract} {fkey} ROOM_NUM: smallint NOT NULL
+    HOSP_STRT_DTTM: timestamp[0] NOT NULL
+    HOSP_END_DTTM: timestamp[0]
+    HOSP_FINL_RATE: timestamp[0]
+    {abstract} {fkey} STFF_ID: integer NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+class R_MEDC {
+    {static} {pkey} MEDC_ID: integer NOT NULL
+    MEDC_CD: varchar[10] NOT NULL
+    MEDC_NAME: varchar[250]
+    MEDC_COND: varchar[100]
+    MEDC_CATG: varchar[100] NOT NULL
+    MANF_BRND: varchar[100] NOT NULL
+    {abstract} {fkey} EXEC_ID: integer NOT NULL
+}
+
+package "Base TCH" #DDDDDD {
+    class T_SUIV_TRMT {
+        {static} {pkey} EXEC_ID: integer NOT NULL
+        {abstract} {fkey} RUN_ID: integer NOT NULL
+        SCRPT_NAME: varchar[250] NOT NULL
+        EXEC_STRT_DTTM: timestamp[0] NOT NULL
+        EXEC_END_DTTM: timestamp[0]
+        EXEC_STTS_CD: varchar[10] NOT NULL
+    }
+
+    class T_SUIV_RUN {
+        {static} {pkey} RUN_ID: integer NOT NULL
+        RUN_STRT_DTTM: timestamp[0] NOT NULL
+        RUN_END_DTTM: timestamp[0]
+        RUN_STTS_CD: varchar[10] NOT NULL
+    }
+}
+
+O_TRET --> R_MEDC: MEDC_ID
+
+O_INDV --> R_PART: PART_ID
+
+O_STFF --> R_PART: PART_ID
+
+O_TELP --> R_PART: PART_ID
+
+O_ADDR --> R_PART: PART_ID
+
+O_CONS --> O_STFF: STFF_ID
+O_CONS --> R_PART: PATN_ID
+O_CONS --> O_TRET: TRET_ID
+
+O_HOSP --> O_CONS: CONS_ID
+O_HOSP --> R_ROOM: ROOM_NUM
+O_HOSP --> O_STFF: STFF_ID
+
+T_SUIV_TRMT --> T_SUIV_RUN: RUN_ID
+
+' Bloc trmt id
+'R_ROOM --> T_SUIV_TRMT
+'O_TRET --> T_SUIV_TRMT
+'O_INDV --> T_SUIV_TRMT
+'O_STFF --> T_SUIV_TRMT
+'O_TELP --> T_SUIV_TRMT
+'O_ADDR --> T_SUIV_TRMT
+'O_ADDR --> T_SUIV_TRMT
+'O_CONS --> T_SUIV_TRMT
+'O_HOSP --> T_SUIV_TRMT
+
+@enduml
