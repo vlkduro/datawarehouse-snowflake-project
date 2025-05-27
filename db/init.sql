@@ -6,3 +6,6 @@ CREATE OR REPLACE DATABASE WRK;
 
 -- Creation de SOC si la base n'existe pas
 CREATE OR REPLACE DATABASE SOC;
+
+-- Creation de TCH si la base n'existe pas
+CREATE OR REPLACE DATABASE TCH;
