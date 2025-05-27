@@ -10,7 +10,8 @@ BEGIN
 END
 $$;
 
--- Creation de WRK si la base n'existe pasDO $$
+-- Creation de WRK si la base n'existe pas
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'WRK') THEN
         CREATE DATABASE WRK;
@@ -18,7 +19,8 @@ BEGIN
 END
 $$;
 
--- Creation de SOC si la base n'existe pasDO $$
+-- Creation de SOC si la base n'existe pas
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'SOC') THEN
         CREATE DATABASE SOC;
@@ -26,7 +28,8 @@ BEGIN
 END
 $$;
 
--- Creation de TCH si la base n'existe pasDO $$
+-- Creation de TCH si la base n'existe pas
+DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'TCH') THEN
         CREATE DATABASE TCH;
