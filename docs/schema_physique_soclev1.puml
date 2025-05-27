@@ -1,4 +1,4 @@
-@startuml schema_physique
+@startuml
 title AI07 - Projet - Schéma physique de la base de données Socle
 
 note as N_Source
@@ -8,6 +8,13 @@ note as N_Source
   Formalisme :
   * <u>Clé primaire</u>
   * <i>Clé étrangère</i>
+end note
+
+note as N_Exec_ID
+  Les liens de la clé étrangère EXEC_ID
+  n'ont pas été représentés pour simplifier
+  le schéma. Cette clé est cependant balisé avec {fkey}
+  sur les tables.
 end note
 
 class R_ROOM {
@@ -173,5 +180,4 @@ T_SUIV_TRMT --> T_SUIV_RUN: RUN_ID
 'O_ADDR --> T_SUIV_TRMT
 'O_CONS --> T_SUIV_TRMT
 'O_HOSP --> T_SUIV_TRMT
-
 @enduml
