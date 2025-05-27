@@ -68,6 +68,7 @@ class CONSULTATION {
   {static} {pkey} ID_CONSULT: integer NOT NULL
   {abstract} {fkey} ID_PERSONNEL: integer NOT NULL
   {abstract} {fkey} ID_PATIENT: integer NOT NULL
+  {abstract} {fkey} ID_TRAITEMENT: integer
   TS_DEBUT_CONSULT: timestamp[0] NOT NULL
   TS_FIN_CONSULT: timestamp[0] NOT NULL
   POIDS_PATIENT: integer NOT NULL
@@ -76,7 +77,6 @@ class CONSULTATION {
   TENSION_PATIENT: integer
   DSC_PATHO: varchar[250]
   INDIC_DIABETE: varchar[10] {boolean}
-  ID_TRAITEMENT: integer
   INDIC_HOSPI: varchar[10] {boolean}
 }
 
