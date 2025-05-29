@@ -53,7 +53,7 @@ L’objectif de cette première phase est de définir l’architecture logique e
 
 ##### ✅ Modèle Physique de Données – **Stage**
 
-Ce modèle définit la structure des données issues des stages (ou périodes en entreprise) : les entités, les types de données, les relations et les contraintes d’intégrité.
+Ce modèle définit la structure des données niveau STG : les entités, les types de données, les relations et les contraintes d’intégrité.
 
 > ![MPD - Stage](../../docs/MPD_STAGE_AI07.png)
 
