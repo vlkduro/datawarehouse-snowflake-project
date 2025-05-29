@@ -55,7 +55,7 @@ L’objectif de cette première phase est de définir l’architecture logique e
 
 Ce modèle définit la structure des données niveau STG : les entités, les types de données, les relations et les contraintes d’intégrité.
 
-> ![MPD - Stage](../../docs/MPD_STAGE_AI07.png)
+> ![MPD - Stage](MPD_STAGE_AI07.png)
 
 
 
@@ -63,7 +63,7 @@ Ce modèle définit la structure des données niveau STG : les entités, les typ
 
 Ce modèle décrit l’ossature principale du data warehouse, avec les dimensions et faits structurant l’ensemble des analyses futures.
 
-> ![MPD - Socle](../../docs/MPD_SOCLE_AI07.png)
+> ![MPD - Socle](MPD_SOCLE_AI07.png)
 
 
 
