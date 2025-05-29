@@ -8,6 +8,7 @@
 | Julien Pillis              |
 | Alexandre Bidaux           |
 | Julie Chartier             |
+| Quentin Glandier           |
 
 ---
 
