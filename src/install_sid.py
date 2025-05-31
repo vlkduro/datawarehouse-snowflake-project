@@ -31,9 +31,10 @@ def main():
     # Connect to Snowflake
     ctx = snowflake.connector.connect(**conn_params)
     cs = ctx.cursor()
-    file_order = ["init.sql", "script_creation_stg.sql", "script_creation_soc.sql"]
+    # Ensures all SQL files are executed in the correct order
+    sql_file_order = ["init.sql", "script_creation_stg.sql", "script_creation_tch.sql", "script_creation_soc.sql"]
     try:
-        for sql_file in file_order:
+        for sql_file in sql_file_order:
             full_path = os.path.join(sql_dir, sql_file)
             print(f"\n--- Executing file: {sql_file} ---")
             execute_sql_file(cs, full_path)
