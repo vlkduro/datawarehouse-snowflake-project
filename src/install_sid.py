@@ -1,49 +1,47 @@
-import sqlite3
 import os
+from dotenv import load_dotenv
+import snowflake.connector
 
-sql_init_script_path = "db/init.sql"
-sql_script_path = "db/script_creation_stg.sql"
-db_path = "db/stg/stg_database.db"
-
-# Création d'un directory pour la base de données si elle n'existe pas
-if not os.path.exists(os.path.dirname(db_path)):
-    os.makedirs(os.path.dirname(db_path))
-    print(f"Created directory for database: {os.path.dirname(db_path)}")
-    print(f"Using database path: {db_path}")
-else:
-    print(f"Database directory already exists: {os.path.dirname(db_path)}")
-    print(f"Using existing database path: {db_path}")
+# Load environment variables from ../.env
+dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path)
 
 
-# SQLITE3
-try:
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+# Snowflake connection parameters
+conn_params = {
+    'user': os.getenv("SNOWFLAKE_USER"),
+    'password': os.getenv("SNOWFLAKE_PASSWORD"),
+    'account': os.getenv("SNOWFLAKE_ACCOUNT"),  # like: xy12345.us-east-1
+    'warehouse': os.getenv("SNOWFLAKE_WAREHOUSE"),
+}
 
-    if os.path.exists(sql_init_script_path):
-        print(f"Skipping {sql_init_script_path} (not applicable for SQLite)")
+# Directory containing .sql files
+sql_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'db'))
 
-    # Execution du init. Creation de la base de données
-    print(
-        f"Execution SQL Init script: {sql_init_script_path} (not applicable for SQLite)"
-    )
-    with open(sql_init_script_path, "r") as file:
-        sql_init_script = file.read()
-    cursor.executescript(sql_init_script)
-    print("SQL Init script executed successfully.")
-    print(f"Executing SQL script: {sql_script_path}")
+def execute_sql_file(cursor, file_path):
+    with open(file_path, 'r') as file:
+        sql_statements = file.read()
+        for statement in sql_statements.split(';'):
+            if statement.strip():
+                print(f"Executing: {statement.strip()}...")
+                cursor.execute(statement)
 
-    # Création de la base de données STG
-    with open(sql_script_path, "r") as file:
-        sql_script = file.read()
-    cursor.executescript(sql_script)
-    print("STG database created successfully.")
 
-except sqlite3.Error as e:
-    print(f"An error occurred while creating the STG database: {e}")
-finally:
-    if "conn" in locals():
-        conn.commit()
-        cursor.close()
-        conn.close()
-        print("Database connection closed.")
+def main():
+    # Connect to Snowflake
+    ctx = snowflake.connector.connect(**conn_params)
+    cs = ctx.cursor()
+    file_order = ["init.sql", "script_creation_stg.sql", "script_creation_soc.sql"]
+    try:
+        for sql_file in file_order:
+            full_path = os.path.join(sql_dir, sql_file)
+            print(f"\n--- Executing file: {sql_file} ---")
+            execute_sql_file(cs, full_path)
+    finally:
+        cs.close()
+        ctx.close()
+        print("All SQL files executed successfully.")
+
+# Run the script
+if __name__ == '__main__':
+    main()

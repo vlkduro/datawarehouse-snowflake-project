@@ -6,3 +6,6 @@
 
 # Fichiers de verrouillages office
 **/.~lock*
+
+# Secrets
+.env
