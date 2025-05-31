@@ -1,5 +1,5 @@
 # Environnement JetBrains
-.idea/
+.idea
 
 # Environnement virtuel python
 .venv
