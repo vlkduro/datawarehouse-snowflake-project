@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import snowflake.connector
 from logger_setup import setup_logger
 
-logger = setup_logger(__file__.split("/")[-1])
+logger = setup_logger("install_sid.py")
 
 # --- Load environment variables ---
 dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
