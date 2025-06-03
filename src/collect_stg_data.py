@@ -2,11 +2,9 @@
 import os
 import csv
 import re
-from datetime import datetime
 
 from dotenv import load_dotenv
 from logger_setup import setup_logger
-from src import utils
 
 logger = setup_logger("collect_stg_data.py")
 
@@ -43,7 +41,7 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
             sql = f"INSERT INTO {table_name}({",".join(col_names)}) VALUES ({', '.join(escaped_values)});\n"
             f_out.write(sql)
 
-def main():
+def collect_stg_data():
     for folder in os.listdir(base_dir):
         folder_path = os.path.join(base_dir, folder)
         if os.path.isdir(folder_path) and folder.startswith("BDD_HOSPITAL_"):
@@ -55,5 +53,3 @@ def main():
                     logger.info(f"Generating SQL from file: {file} into table: {table_name}")
                     generate_insert_sql_file(table_name, file_path, output_sql_dir)
 
-if __name__ == '__main__':
-    main()

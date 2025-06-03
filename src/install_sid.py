@@ -1,13 +1,13 @@
 import os
 from logger_setup import setup_logger
-from src import utils
+import utils
 
 logger = setup_logger("install_sid.py")
 
 # --- SQL directory path ---
 sql_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'db'))
 
-def main():
+def install_sid():
     ctx = utils.connect_snowflake()
     cs = ctx.cursor()
     logger.info(f"Connecting to Snowflake as user: {utils.get_username()}...")
@@ -25,7 +25,3 @@ def main():
         cs.close()
         ctx.close()
         logger.info("Snowflake connection closed.")
-
-# --- Run the script ---
-if __name__ == '__main__':
-    main()

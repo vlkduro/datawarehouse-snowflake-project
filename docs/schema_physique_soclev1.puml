@@ -37,18 +37,19 @@ class O_TRET {
     TRET_CRTN_DTTM: timestamp[0] NOT NULL
     {abstract} {fkey} EXEC_ID: integer NOT NULL
 }
-note right of O_TRET::TRET_ID
-    Obtenu en faisant la combinaison des champs suivants :
-    CD_MEDICAMENT
-    CATG_MEDICAMENT
-    MARQUE_FABRI
-end note
 
 class R_PART {
     {static} {pkey} PART_ID: integer NOT NULL
     SRC_ID: integer NOT NULL
     SRC_TYP: varchar[50] NOT NULL
 }
+
+note right of R_PART::PART_ID
+    Obtenu en faisant la combinaison des champs suivants :
+    ID_PERSONNEL, FONCTION_PERSONNEL (origine PERSONNEL)
+    Ou :
+    ID_PATIENT, 'Patient' (origine PATIENT)
+end note
 
 class O_INDV {
     {static} {abstract} {pkey & fkey} PART_ID: integer NOT NULL
@@ -131,6 +132,13 @@ class R_MEDC {
     MANF_BRND: varchar[100] NOT NULL
     {abstract} {fkey} EXEC_ID: integer NOT NULL
 }
+
+note right of R_MEDC::MEDC_ID
+    Obtenu en faisant la combinaison des champs suivants :
+    CD_MEDICAMENT
+    CATG_MEDICAMENT
+    MARQUE_FABRI
+end note
 
 package "Base TCH" #DDDDDD {
     class T_SUIV_TRMT {
