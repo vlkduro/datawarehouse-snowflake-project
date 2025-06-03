@@ -2,8 +2,11 @@
 import os
 import csv
 import re
+from datetime import datetime
+
 from dotenv import load_dotenv
 from logger_setup import setup_logger
+from src import utils
 
 logger = setup_logger("collect_stg_data.py")
 
@@ -20,8 +23,13 @@ def extract_table_name(filename):
 def generate_insert_sql_file(table_name, file_path, output_dir):
     sql_file_path = os.path.join(output_dir, f"insert_{table_name}.sql")
     with open(file_path, 'r', encoding='utf-8') as f_in, open(sql_file_path, 'w', encoding='utf-8') as f_out:
+        f_out.write(f"USE DATABASE STG;\nUSE SCHEMA PUBLIC;\n\n")
         reader = csv.reader(f_in, delimiter=';')
-        rows = list(reader)[1:]
+
+        rows = list(reader)
+        # Cas particulier, dans la table HOSPITALISATION, on enlève le suffixe _hospi des noms de colonnes
+        col_names = [name.replace("_hospi", "") for name in rows[0] if name != '']
+        rows = rows[1:]
 
         if not rows:
             logger.warning(f"[SKIP] {file_path} is empty.")
@@ -30,8 +38,9 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
         logger.info(f"Generating SQL file {sql_file_path} with {len(rows)} rows for table {table_name}")
 
         for row in rows:
+            row.pop(0)  # Remove the first column as it is unused
             escaped_values = [ "'" + str(val).replace("'", "''") + "'" for val in row ]
-            sql = f"INSERT INTO {table_name} VALUES ({', '.join(escaped_values)});\n"
+            sql = f"INSERT INTO {table_name}({",".join(col_names)}) VALUES ({', '.join(escaped_values)});\n"
             f_out.write(sql)
 
 def main():
