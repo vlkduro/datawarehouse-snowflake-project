@@ -10,3 +10,7 @@ src/__pycache__
 
 # Secrets
 .env
+
+# Fichiers db et logs
+db/stg_data
+logs/
