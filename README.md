@@ -16,16 +16,16 @@
 
 3. Activez l'environnement virtuel :
 
-- Sur Windows :
+    - Sur Windows :
 
-    ```bash
-    venv\Scripts\activate
-    ```
-- Sur Mac/Linux :
+        ```bash
+        venv\Scripts\activate
+        ```
+    - Sur Mac/Linux :
 
-    ```bash
-    source venv/bin/activate
-    ```
+        ```bash
+        source venv/bin/activate
+        ```
 
 
 4. Afin de se connecter à distance à l'environnement `Snowflake`, il faut créer à la racine du projet le fichier `.env` suivant : 
