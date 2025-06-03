@@ -3,6 +3,7 @@
 
 # Environnement virtuel python
 .venv
+src/__pycache__
 
 # Fichiers de verrouillages office
 **/.~lock*
