@@ -1,4 +1,4 @@
-# generate_stg_sql.py
+# collect_stg_data.py
 import os
 import csv
 import re
@@ -35,11 +35,16 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
 
         logger.info(f"Generating SQL file {sql_file_path} with {len(rows)} rows for table {table_name}")
 
+        values_list = []
+
         for row in rows:
             row.pop(0)  # Remove the first column as it is unused
             escaped_values = [ "'" + str(val).replace("'", "''") + "'" for val in row ]
-            sql = f"INSERT INTO {table_name}({','.join(col_names)}) VALUES ({', '.join(escaped_values)});\n"
-            f_out.write(sql)
+            values_list.append(f"({', '.join(escaped_values)})")
+
+        # Une seule requête INSERT
+        sql = f"INSERT INTO {table_name} ({', '.join(col_names)}) VALUES\n" + ",\n".join(values_list) + ";\n"
+        f_out.write(sql)
 
 def collect_stg_data():
     for folder in os.listdir(base_dir):
