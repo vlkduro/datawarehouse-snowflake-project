@@ -1,7 +1,7 @@
 # execute_stg_sql.py
 import os
 from logger_setup import setup_logger
-from src import utils
+import utils
 
 logger = setup_logger("launch_load_sid.py")
 

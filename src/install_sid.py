@@ -1,6 +1,6 @@
 import os
 from logger_setup import setup_logger
-from src import utils
+import utils
 
 logger = setup_logger("install_sid.py")
 

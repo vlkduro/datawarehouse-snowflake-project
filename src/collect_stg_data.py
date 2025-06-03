@@ -6,7 +6,7 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from logger_setup import setup_logger
-from src import utils
+import utils
 
 logger = setup_logger("collect_stg_data.py")
 
@@ -40,7 +40,7 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
         for row in rows:
             row.pop(0)  # Remove the first column as it is unused
             escaped_values = [ "'" + str(val).replace("'", "''") + "'" for val in row ]
-            sql = f"INSERT INTO {table_name}({",".join(col_names)}) VALUES ({', '.join(escaped_values)});\n"
+            sql = f"INSERT INTO {table_name}({','.join(col_names)}) VALUES ({', '.join(escaped_values)});\n"
             f_out.write(sql)
 
 def main():
