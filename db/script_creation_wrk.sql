@@ -1,4 +1,4 @@
-USE DATABASE STG;
+USE DATABASE WRK;
 USE SCHEMA PUBLIC;
 
 -- DROP dans l'ordre inverse de création des dépendances
