@@ -13,7 +13,7 @@
 ---
 
 
-## Connection à Slowflake nécessaire pour tester le projet
+## Connexion à Slowflake nécessaire pour tester le projet
 
 Afin de se connecter à distance à l'environnement `Snowflake`, il faut créer à la racine du projet le fichier `.env` suivant : 
 
@@ -28,17 +28,22 @@ SNOWFLAKE_WAREHOUSE=warehouse
 
 ### 1. ⚙️ Installation du SID
 
-Les différents scripts suivatns sont lancés dans l'ordre:
+Les différents scripts suivants sont lancés dans l'ordre:
  - init.sql crée les bases si celles-ci sont non existantes
- - script_creation_stg.sql créer le stage
- - script_creation_soc.sql créer la base SOC
- - script_creation_soc.tch créer la base TCH liée au SOC
+ - script_creation_stg.sql crée le stage
+ - script_creation_soc.sql crée la base SOC
+ - script_creation_soc.tch crée la base TCH liée au SOC
 
-Les tables de STG et WRK sont recrées à chaque utilisation en les supprimant avant initalisation dans l'ordre inverse des dépendance.
+Les tables de STG et WRK sont recréées à chaque utilisation en les supprimant avant initialisation dans l'ordre inverse des dépendances.
 
-Les exécutions de code SQL sont tracées dans un fichier dans le dossier log
+Les exécutions de code SQL sont tracées dans le dossier log.
 
-Le client, les partages de documents, et la centralisation des échanges officiels.
+
+Les données DATE ont été convertie en TIMESTAMP.
+
+Concernant les TIMESTAMP:
+Lorsque les données sont partiellement manquantes on conserve ce qu'on peut en précision (ex: garder l'information à l'échelle des heures si les minutes sont manquantes)
+Quand la donnée est manquante, elle est converti à 0001/01/01/00:00:00, les champs étant NOT NULL et on ne souhaitait pas supprimer la ligne et perdre des informations.
 
 ### 2. 🧠  Installation du SID et Ingestion des données
 
@@ -47,12 +52,9 @@ Le client, les partages de documents, et la centralisation des échanges officie
 
 L'ensemble des données sont chargées à l'aide de launch_load_sid.py
 
-#### Travaux réalisés :
-
----
 
 ### ✅ Bilan
 
-Nous avons pu mettre en pratique nos connaissances de SGBG sur Snowflake et découvrir les librairies Python associées pour automatiser la pipeline de données.
+Nous avons pu mettre en pratique nos connaissances de SGBD sur Snowflake et découvrir les librairies Python associées pour automatiser la pipeline de données.
 
 ---
