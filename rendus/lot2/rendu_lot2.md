@@ -24,6 +24,10 @@ SNOWFLAKE_ACCOUNT=compte
 SNOWFLAKE_WAREHOUSE=warehouse
 ```
 
+## Données à ajouter pour tester le projet
+
+Pour le bon fonctionnement des scrpits Python chargeant les tables Snowflake, il est nécessaire d'ajouter dans Data/ le dossier de données txt du sujet: 'Data Hospital'
+
 ## 📦 Rendu Lot 2 : Installation du SID et Ingestion des données
 
 ### 1. ⚙️ Installation du SID
@@ -32,12 +36,10 @@ Les différents scripts suivants sont lancés dans l'ordre:
  - init.sql crée les bases si celles-ci sont non existantes
  - script_creation_stg.sql crée le stage
  - script_creation_soc.sql crée la base SOC
- - script_creation_soc.tch crée la base TCH liée au SOC
 
 Les tables de STG et WRK sont recréées à chaque utilisation en les supprimant avant initialisation dans l'ordre inverse des dépendances.
 
 Les exécutions de code SQL sont tracées dans le dossier log.
-
 
 Les données DATE ont été convertie en TIMESTAMP.
 
@@ -50,7 +52,7 @@ Quand la donnée est manquante, elle est converti à 0001/01/01/00:00:00, les ch
  - Développement des scripts sql d’alimentation des tables de STG
  - Développement du script ‘launch_load_sid.py’ d’exécution du chargement des tables STG
 
-L'ensemble des données sont chargées à l'aide de launch_load_sid.py
+L'ensemble des données sont initialisées et chargée à partir du script main.py
 
 
 ### ✅ Bilan
