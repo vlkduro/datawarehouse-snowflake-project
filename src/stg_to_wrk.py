@@ -53,6 +53,7 @@ ruleset = {
     },
 }
 
+
 # Returns a dataframe
 def retreive_table(cnx, table_name):
     query = f"SELECT * FROM STG.PUBLIC.{table_name}"
@@ -70,21 +71,24 @@ def sanitize_data(table, table_name):
             func = rules[col]
             table[col] = table[col].apply(func)
 
+
 def insert_data_in_wrk(cs, table, table_name):
     # Insert data into the WRK table
     cols = table.columns.tolist()
-    col_names = ', '.join(cols)
-    insert_query = (f'USE DATABASE WRK; '
-                    f'USE SCHEMA PUBLIC; '
-                    f'INSERT INTO {table_name} ({col_names}) VALUES')
+    col_names = ", ".join(cols)
+    insert_query = (
+        f"USE DATABASE WRK; "
+        f"USE SCHEMA PUBLIC; "
+        f"INSERT INTO {table_name} ({col_names}) VALUES"
+    )
     values = []
     for _, row in table.iterrows():
-        values.append(f"({', '.join(
-            [f"'{str(value)}'" for value in row.tolist()]
-        )})")
+        row_values = [f"'{str(value)}'" for value in row.tolist()]
+        values.append(f"({', '.join(row_values)})")
 
     insert_query += ",\n".join(values) + ";"
     utils.execute_sql(cs, insert_query, logger)
+
 
 def populate_wrk_from_stg():
     cnx = utils.connect_snowflake()
@@ -92,7 +96,13 @@ def populate_wrk_from_stg():
     logger.info(f"Connecting to Snowflake as user: {utils.get_username()}...")
     # Important for constraints
     table_order = [
-        "MEDICAMENT", "PATIENT", "TRAITEMENT", "PERSONNEL", "CONSULTATION", "CHAMBRE", "HOSPITALISATION"
+        "MEDICAMENT",
+        "PATIENT",
+        "TRAITEMENT",
+        "PERSONNEL",
+        "CONSULTATION",
+        "CHAMBRE",
+        "HOSPITALISATION",
     ]
     for table_name in table_order:
         logger.info(f"Processing table: {table_name}")
