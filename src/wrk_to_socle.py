@@ -96,11 +96,13 @@ def populate_socle_from_wrk():
     logger.info("Snowflake connection closed.")
 
 
+"""_summary_
 def main():
-    logger.info("Starting the population of SOCLE tables from WRK...")
-    populate_socle_from_wrk()
-    logger.info("SOCLE tables populated successfully.")
+logger.info("Starting the population of SOCLE tables from WRK...")
+populate_socle_from_wrk()
+logger.info("SOCLE tables populated successfully.")
 
 
 if __name__ == "__main__":
-    main()
+main()
+"""
