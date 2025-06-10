@@ -26,6 +26,15 @@ def str_to_timezone(timezone_str):
     timezone = datetime.strptime(timezone_str, "%Y-%m-%d-%H-%M-%S")
     return timezone
 
+ids = {
+    "MEDICAMENT": "CD_MEDICAMENT",
+    "PATIENT": "ID_PATIENT",
+    "TRAITEMENT": "ID_TRAITEMENT",
+    "PERSONNEL": "ID_PERSONNEL",
+    "CONSULTATION": "ID_CONSULT",
+    "CHAMBRE": "NO_CHAMBRE",
+    "HOSPITALISATION": "ID_HOSPI",
+}
 
 ruleset = {
     "MEDICAMENT": {},
@@ -81,9 +90,18 @@ def insert_data_in_wrk(cs, table, table_name):
         f"USE SCHEMA PUBLIC; "
         f"INSERT INTO {table_name} ({col_names}) VALUES"
     )
-    values = []
+    # Prevents duplicated inserts
+    values_map = {}
     for _, row in table.iterrows():
-        row_values = [f"'{str(value)}'" for value in row.tolist()]
+        id = row[ids[table_name]]
+        if id in values_map:
+            logger.warning(f"Duplicate ID found in {table_name}: {id}. Skipping insert.")
+            continue
+        values_map[id] = row
+
+    values = []
+    for row in values_map.values():
+        row_values = [f"'{str(value)}'" for value in row]
         values.append(f"({', '.join(row_values)})")
 
     insert_query += ",\n".join(values) + ";"
