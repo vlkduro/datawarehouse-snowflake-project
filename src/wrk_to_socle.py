@@ -182,24 +182,35 @@ def map_and_prepare_data(df: pd.DataFrame, table_name: str) -> pd.DataFrame:
 
 from snowflake.connector.pandas_tools import write_pandas
 
-def insert_data_in_socle(conn, df: pd.DataFrame, stg_table: str) -> None:
-    tgt = SOC_TARGET[stg_table]
-    success, nchunks, nrows, _ = write_pandas(
-        conn,
-        df,
-        table_name=tgt,
-        schema="PUBLIC",
-        database="SOC",
-        quote_identifiers=False,   # on_error n’est pas supporté
+
+def insert_data_in_socle(cs, table, table_name):
+    cols = table.columns.tolist()
+    col_names = ", ".join(cols)
+    insert_query = (
+        f"USE DATABASE SOC; "
+        f"USE SCHEMA PUBLIC; "
+        f"INSERT INTO {SOC_TARGET[table_name]} ({col_names}) VALUES "
     )
-    logger.info("Inserted %s rows into %s", nrows, tgt)
-    logger.info("Pandas insertion returned: %s", success)
+    values = []
+    for _, row in table.iterrows():
+        row_values = []
+        for value in row.tolist():
+            if value is None:
+                row_values.append("NULL")
+            else:
+                safe_value = str(value).replace("'", "''")
+                row_values.append(f"'{safe_value}'")
+        values.append(f"({', '.join(row_values)})")
+
+    insert_query += ",\n".join(values) + ";"
+    utils.execute_sql(cs, insert_query, logger)
 
 
 def populate_socle_from_wrk() -> None:
-    with utils.connect_snowflake() as conn:          # connection unique
+    with utils.connect_snowflake() as conn:  
+        cs = conn.cursor()
         for stg_table in columns_mapping:
             logger.info("=== WRK -> SOCLE : %s ===", stg_table)
             df_stg = retrieve_table_wrk(conn, stg_table)
             df_soc = map_and_prepare_data(df_stg, stg_table)
-            insert_data_in_socle(conn, df_soc, stg_table)
+            insert_data_in_socle(cs, df_soc, stg_table)
