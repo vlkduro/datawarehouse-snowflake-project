@@ -13,7 +13,7 @@ TABLE_CONSTANTS = {
 }
 
 column_mapping_party = {
-    # "PART_ID" ajouté dynamiquement (surrogate key)
+    # "PART_ID" ajouté dynamiquement (surrogate key) #todo part_id
     "ID_PERSONNEL": "SRC_ID",
     "FONCTION_PERSONNEL" : "SRC_TYP",
 }
@@ -180,9 +180,6 @@ def map_and_prepare_data(df: pd.DataFrame, table_name: str) -> pd.DataFrame:
     _fix_timestamps(df)
     return df.where(pd.notnull(df), None)  # Snowflake -> NULL
 
-from snowflake.connector.pandas_tools import write_pandas
-
-
 def insert_data_in_socle(cs, table, table_name):
     cols = table.columns.tolist()
     col_names = ", ".join(cols)
@@ -213,4 +210,47 @@ def populate_socle_from_wrk() -> None:
             logger.info("=== WRK -> SOCLE : %s ===", stg_table)
             df_stg = retrieve_table_wrk(conn, stg_table)
             df_soc = map_and_prepare_data(df_stg, stg_table)
-            insert_data_in_socle(cs, df_soc, stg_table)
+            
+            if SOC_TARGET[stg_table] =="R_PART":
+                insert_data_in_socle_rpart(cs, df_soc, stg_table)
+            else:
+                insert_data_in_socle(cs, df_soc, stg_table)
+            
+def insert_data_in_socle_rpart(cs, table, table_name):
+    part_id_dict = {}
+    part_id_count=1
+
+
+    cols = table.columns.tolist()
+    col_names = ", ".join(cols)
+    insert_query = (
+        f"USE DATABASE SOC; "
+        f"USE SCHEMA PUBLIC; "
+        f"INSERT INTO R_PART (PART_ID,{col_names}) VALUES "
+    )
+    values = []
+    for _, row in table.iterrows():
+        row_values = []
+        logger.info("row.tolist(): %s ", row.tolist())
+        logger.info("LEN: %s ", len(row.tolist()))
+        
+        if (row.tolist()[0] is not None and row.tolist()[1] is not None):
+            part_id_value = str(str(row.tolist()[0])+row.tolist()[1])
+            if part_id_value not in part_id_dict.keys():
+                part_id_dict[part_id_value]=part_id_count
+                part_id_count+=1
+                
+            safe_part_id_value = str(part_id_dict[part_id_value]).replace("'", "''")
+            row_values.append(f"'{safe_part_id_value}'")
+
+        for value in row.tolist():
+            if value is None:
+                row_values.append("NULL")
+            else:
+                safe_value = str(value).replace("'", "''")
+                row_values.append(f"'{safe_value}'")
+                logger.info("safe_value: %s ", safe_value)
+        values.append(f"({', '.join(row_values)})")
+
+    insert_query += ",\n".join(values) + ";"
+    utils.execute_sql(cs, insert_query, logger)
