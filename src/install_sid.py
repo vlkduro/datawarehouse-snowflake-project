@@ -11,7 +11,7 @@ def install_sid():
     ctx = utils.connect_snowflake()
     cs = ctx.cursor()
     logger.info(f"Connecting to Snowflake as user: {utils.get_username()}...")
-    sql_file_order = ["init.sql", "script_creation_stg.sql", "script_creation_wrk.sql", "script_creation_soc.sql"]
+    sql_file_order = ["init.sql", "script_creation_stg.sql", "script_creation_wrk.sql","script_creation_tch.sql" ,"script_creation_soc.sql"]
     
     try:
         for sql_file in sql_file_order:

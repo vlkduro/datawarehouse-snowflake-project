@@ -23,7 +23,6 @@ os.makedirs(output_sql_dir, exist_ok=True)
 def extract_table_name(filename):
     return re.sub(r"[_]?\d{6,8}\.txt$", "", filename, flags=re.IGNORECASE).upper()
 
-
 def generate_insert_sql_file(table_name, file_path, output_dir):
     sql_file_path = os.path.join(output_dir, f"insert_{table_name}.sql")
     with open(file_path, "r", encoding="utf-8") as f_in, open(
@@ -36,7 +35,6 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
         # Cas particulier, dans la table HOSPITALISATION, on enlève le suffixe _hospi des noms de colonnes
         col_names = [name.replace("_hospi", "") for name in rows[0] if name != ""]
         rows = rows[1:]
-
         if not rows:
             logger.warning(f"[SKIP] {file_path} is empty.")
             return
@@ -45,20 +43,24 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
             f"Generating SQL file {sql_file_path} with {len(rows)} rows for table {table_name}"
         )
 
-        values_list = []
+        # ---------- nouveau : batch insert ----------
+        BATCH_SIZE = 150_000          # < 200 000 (limite Snowflake)
+        values_batch = []
 
-        for row in rows:
-            row.pop(0)  # Remove the first column as it is unused
-            escaped_values = ["'" + str(val).replace("'", "''") + "'" for val in row]
-            values_list.append(f"({', '.join(escaped_values)})")
+        for i, row in enumerate(rows, 1):
+            row.pop(0)  # première colonne ignorée
+            escaped = ["'" + str(v).replace("'", "''") + "'" for v in row]
+            values_batch.append(f"({', '.join(escaped)})")
 
-        # Une seule requête INSERT
-        sql = (
-            f"INSERT INTO {table_name} ({', '.join(col_names)}) VALUES\n"
-            + ",\n".join(values_list)
-            + ";\n"
-        )
-        f_out.write(sql)
+            # quand le batch est plein ou qu’on est à la fin, on re-écrit un INSERT
+            if len(values_batch) == BATCH_SIZE or i == len(rows):
+                sql = (
+                    f"INSERT INTO {table_name} ({', '.join(col_names)}) VALUES\n"
+                    + ",\n".join(values_batch)
+                    + ";\n"
+                )
+                f_out.write(sql)
+                values_batch.clear()  # réinitialise le batch
 
 
 def collect_stg_data():
