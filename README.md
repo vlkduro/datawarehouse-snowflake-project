@@ -1,6 +1,6 @@
 ![status_1](https://img.shields.io/badge/Lot%201-done-brightgreen)
-![status_2](https://img.shields.io/badge/Lot%201-done-brightgreen)
-![status_3](https://img.shields.io/badge/Lot%202-In%20Progress-orange)
+![status_2](https://img.shields.io/badge/Lot%202-done-brightgreen)
+![status_3](https://img.shields.io/badge/Lot%203-In%20Progress-orange)
 ![status_4](https://img.shields.io/badge/Lot%204--grey)
 
 # ai07-groupe4-projet
