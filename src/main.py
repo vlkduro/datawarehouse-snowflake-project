@@ -30,4 +30,7 @@ def pipeline():
 
 
 if __name__ == "__main__":
-    pipeline()
+    try:
+        pipeline()
+    except Exception as e:
+        logger.error(f"An error occurred during the pipeline execution: {e}")

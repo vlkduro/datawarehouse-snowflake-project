@@ -64,6 +64,14 @@ def generate_insert_sql_file(table_name, file_path, output_dir):
 
 
 def collect_stg_data():
+    # Nettoyage du dossier des SQL générés
+    if os.path.exists(output_sql_dir):
+        for file in os.listdir(output_sql_dir):
+            file_path = os.path.join(output_sql_dir, file)
+            if os.path.isfile(file_path) and file.endswith(".sql"):
+                logger.info(f"Removing existing SQL file: {file_path}")
+                os.remove(file_path)
+
     for folder in os.listdir(base_dir):
         folder_path = os.path.join(base_dir, folder)
         if os.path.isdir(folder_path) and folder.startswith("BDD_HOSPITAL_"):
