@@ -56,24 +56,31 @@ pip install apache-airflow
 
 2. Configurer Airflow :
 
-Trouver le fichier `airflow.cfg` dans le dossier `airflow` de votre environnement virtuel et modifier les paramètres suivants :
+- #### Windows/Linux :
 
-```ini
-...
-dags_folder = /chemin/vers/le/dossier/des/dags
-```
+  Trouver le fichier `airflow.cfg` dans le dossier `airflow` de votre environnement virtuel et modifier les paramètres suivants :
 
-Pour nous ce fichier est le fichier `<votre chemin>/ai07-groupe4-projet/src`
+  ```ini
+  ...
+  dags_folder = /chemin/vers/le/dossier/des/dags
+  ```
 
-3. Lancer airflow :
+  Pour nous ce fichier est le fichier `<votre chemin>/ai07-groupe4-projet/src`
+
+- #### MacOS :
+  Le fichier `airflow.cfg` se trouve par défaut dans `/Users/[username]/airflow/airflow.cfg`.
+  Le dag folder à rentrer sera alors `/Users/[username]/<votre chemin>/ai07-groupe4-projet/src`.
+
+1. Lancer airflow :
 
 ```bash
 airflow standalone
 ```
 
+Un site web se chargera sur l'interface `localhost:8080`.
 Au début de l'execution de cette commade, vous aurez le mot de passe pour vous connecter à l'interface web d'airflow.
-Si vous le loupez, vous pouvez aller chercher le mot de passe dans le fichier `simple_auth_manager_passwords.json.generated` qui se trouve dans le dossier `airflow` de votre environnement.
+Si vous le loupez, vous pouvez aller chercher le mot de passe dans le fichier `simple_auth_manager_passwords.json.generated` qui se trouve dans le dossier `airflow` de votre environnement (ou bien dans le dossier : `Users/[username]/airflow`)
 
-4. Naviguez dans airflow
+1. Naviguez dans airflow
 
 Allez dans DAGs et activez les DAGs que vous souhaitez exécuter.
