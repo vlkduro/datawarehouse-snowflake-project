@@ -4,6 +4,7 @@
 # Environnement virtuel python
 .venv
 src/__pycache__
+**/airflow_venv
 
 # Fichiers de verrouillages office
 **/.~lock*
