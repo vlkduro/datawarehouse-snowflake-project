@@ -46,6 +46,13 @@ L'ensemble des tables de SOCLE étant différentes de STG/WRK, nous avons du pro
 - En particulier créer les clés (Surrogate Keys).
 - Faire attention au typage (TIMESTAMP notamment).
 
+### 3. Création de DAGs Airflow
+
+Afin de pouvoir historiser et tracer nos traitements, nous avons crée les 2 DAGs Airflow suivants :
+
+- `install_sid` : (Re)crée les différentes bases de données (fichier `dag_chaine_installation.py`) 
+- `load_sid` : (Re)alimente toutes les tables des différentes bases de données (fichier `dag_load_data.py`) 
+
 ## ✅ Bilan
 
-#### Ce lot 3 nous a permis de pouvoir alimenter l'ensemble de notre datawarehouse avec des données filtrées pour passer ainsi à la création de l'outil décisionnel avec PowerBI.
+#### Ce lot 3 nous a permis de pouvoir alimenter l'ensemble de notre datawarehouse avec des données filtrées et avec un suivi des traitements. Cela nous permet ainsi de passer à la création de l'outil décisionnel avec PowerBI. 
