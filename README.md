@@ -1,86 +1,114 @@
-![status_1](https://img.shields.io/badge/Lot%201-done-brightgreen)
-![status_2](https://img.shields.io/badge/Lot%202-done-brightgreen)
-![status_3](https://img.shields.io/badge/Lot%203-In%20Progress-orange)
-![status_4](https://img.shields.io/badge/Lot%204--grey)
+# University Data Warehouse Project with Snowflake – Decision Support Tool
 
-# ai07-groupe4-projet
+This repository contains a university project focused on building a **Data Warehouse** using **Snowflake** in order to design a **decision support tool**.
 
-## Secrets et structure
+## Overview
 
-1. Clonez ce dépôt ou téléchargez les fichiers nécessaires.
+- **Objective**: Implement a Data Warehouse architecture and leverage Snowflake to develop a decision support tool.  
+- **Technologies**:  
+  - Snowflake (cloud-based Data Warehouse)  
+  - Python (workflow orchestration & data processing)  
+  - Airflow (ETL orchestration)  
+- **Deliverable**: A fully functional decision support environment connected to Snowflake.  
 
-2. Créez un environnement virtuel (optionnel mais recommandé) :
+## Setup Instructions
 
-   ```bash
-   python -m venv venv
-   ```
+### 1. Clone the repository
 
-3. Activez l'environnement virtuel :
+```bash
+git clone <your-repo-url>
+cd your-project
+```
 
-   - Sur Windows :
+### 2. Create a virtual environment (recommended)
 
-     ```bash
-     venv\Scripts\activate
-     ```
+```bash
+python -m venv venv
+```
 
-   - Sur Mac/Linux :
+Activate it:
 
-     ```bash
-     source venv/bin/activate
-     ```
+- On **Windows**:
+  ```bash
+  venv\Scripts\activate
+  ```
 
-4. Afin de se connecter à distance à l'environnement `Snowflake`, il faut créer à la racine du projet le fichier `.env` suivant :
+- On **Mac/Linux**:
+  ```bash
+  source venv/bin/activate
+  ```
 
-   ```
-   SNOWFLAKE_USER=user
-   SNOWFLAKE_PASSWORD=mot_de_passe
-   SNOWFLAKE_ACCOUNT=compte
-   SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-   ```
+### 3. Configure Snowflake secrets
 
-**Remarque :**
+Create a `.env` file at the root of the project with the following content:
 
-> - Le fichier .env est dans le .gitignore afin de ne pas push les secrets de la BDD, faites attention à ne jamais push ce fichier.
+```ini
+SNOWFLAKE_USER=user
+SNOWFLAKE_PASSWORD=password
+SNOWFLAKE_ACCOUNT=account
+SNOWFLAKE_WAREHOUSE=COMPUTE_WH
+```
 
-> - Les timestamps ont été définie comme `varchar(30)`, car le format des timestamps n'est pas adapté au format Snowflake. Cette adaptation sera bien évidemment faite pour la BDD WRK.
+⚠️ **Important**:  
+- The `.env` file must not be committed (already included in `.gitignore`).  
+- Role **SYSADMIN** is required for inserting data into Snowflake tables.  
 
-> - Le rôle "SYSADMIN" est nécessaire pour l'insertion des données dans les tables sur Snowflake.
+### 4. Install dependencies
 
-## Airflow 🤡
+```bash
+pip install -r requirements.txt
+```
 
-1. Installer airflow :
+### 5. Run the workflow
+
+```bash
+python src/main.py
+```
+
+---
+
+## Airflow Integration
+
+### Install Airflow
 
 ```bash
 pip install apache-airflow
 ```
 
-2. Configurer Airflow :
+### Configure Airflow
 
-- #### Windows/Linux :
-
-  Trouver le fichier `airflow.cfg` dans le dossier `airflow` de votre environnement virtuel et modifier les paramètres suivants :
+- **Windows/Linux**:  
+  Edit the `airflow.cfg` file in your environment and update:
 
   ```ini
-  ...
-  dags_folder = /chemin/vers/le/dossier/des/dags
+  dags_folder = /path/to/ai07-groupe4-projet/src
   ```
 
-  Pour nous ce fichier est le fichier `<votre chemin>/ai07-groupe4-projet/src`
+- **MacOS**:  
+  Default path:  
+  ```
+  /Users/[username]/airflow/airflow.cfg
+  ```
+  Update `dags_folder` to:  
+  ```
+  /Users/[username]/<your_path>/ai07-groupe4-projet/src
+  ```
 
-- #### MacOS :
-  Le fichier `airflow.cfg` se trouve par défaut dans `/Users/[username]/airflow/airflow.cfg`.
-  Le dag folder à rentrer sera alors `/Users/[username]/<votre chemin>/ai07-groupe4-projet/src`.
-
-1. Lancer airflow :
+### Run Airflow
 
 ```bash
 airflow standalone
 ```
 
-Un site web se chargera sur l'interface `localhost:8080`.
-Au début de l'execution de cette commade, vous aurez le mot de passe pour vous connecter à l'interface web d'airflow.
-Si vous le loupez, vous pouvez aller chercher le mot de passe dans le fichier `simple_auth_manager_passwords.json.generated` qui se trouve dans le dossier `airflow` de votre environnement (ou bien dans le dossier : `Users/[username]/airflow`)
+Access the UI at **`http://localhost:8080`**.  
+The login password will be displayed on the first run, or can be found in:  
+```
+simple_auth_manager_passwords.json.generated
+```
 
-1. Naviguez dans airflow
+---
 
-Allez dans DAGs et activez les DAGs que vous souhaitez exécuter.
+## Notes
+
+- Built as part of a university project.  
+- Focus: combining **Snowflake** with **ETL orchestration** to deliver a **decision support tool**.  
